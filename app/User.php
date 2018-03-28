@@ -1,29 +1,61 @@
-<?php
+<?php namespace App;
+use Cartalyst\Sentinel\Users\EloquentUser;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Cviebrock\EloquentTaggable\Taggable;
 
-namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+class User extends EloquentUser {
 
-class User extends Authenticatable
-{
-    use Notifiable;
+	/**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
+
+	protected $table = 'users';
+
+	/**
+	 * The attributes to be fillable from the model.
+	 *
+	 * A dirty hack to allow fields to be fillable by calling empty fillable array
+	 *
+	 * @var array
+	 */
+    use Taggable;
+
+	protected $fillable = [];
+	protected $guarded = ['id'];
+	/**
+	 * The attributes excluded from the model's JSON form.
+	 *
+	 * @var array
+	 */
+	protected $hidden = ['password'];
+
+	/**
+	* To allow soft deletes
+	*/
+	// use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
+    protected $appends = ['full_name'];
+    public function getFullNameAttribute()
+    {
+        return str_limit($this->first_name . ' ' . $this->last_name, 30);
+    }
+    public function country() {
+        return $this->belongsTo( Country::class );
+    }
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+	 * A user can have many messages
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function messages()
+	{
+		return $this->hasMany(Message::class);
+	}
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
 }
