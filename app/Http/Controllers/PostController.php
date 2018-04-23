@@ -14,9 +14,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::orderBy('id', 'DESC')->paginate(5);
 
-        return view('posts.index')->with('posts',$posts);
+        return view('posts.index', ['posts' => $posts]);
     }
 
     /**
@@ -26,7 +26,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -37,7 +37,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required'
+        ]);
+        $post = new Post;
+        $post->name = $request->get('name');
+        $post->save();
+        return redirect()->route('home')
+            ->with('success','Product created successfully');
     }
 
     /**
@@ -48,7 +55,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return view('posts.category', ['post' => $post]);
     }
 
     /**
@@ -59,7 +67,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        return view('posts.edit')
+            ->with('post', $post);
     }
 
     /**
@@ -71,7 +81,14 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required'
+        ]);
+        $post = Post::find($id);
+        $post->name = $request->get('name');
+        $post->save();
+        return redirect()->route('home')
+            ->with('success','Product created successfully');
     }
 
     /**
@@ -82,6 +99,9 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->delete();
+        return redirect()->back()
+            ->with('success', 'Product deleted successfully');
     }
 }

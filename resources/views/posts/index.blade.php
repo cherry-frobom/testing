@@ -12,6 +12,7 @@
                     <th>{{ __('Name') }}</th>
                     <th>{{ __('Created') }}</th>
                     <th>{{ __('Updated') }}</th>
+                    <th>{{ __('Action') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,10 +21,16 @@
                     <td>
                         <a href="{{ url('posts/'.$post->id) }}">{{ $post->name }}</a>
                     </td>
-                    <td>{{ $post->created_at }}</td>
-                    <td>{{ $post->updated_at }}</td>
+                    <td>{{ $post->created_at->format('Y/m/d') }}</td>
+                    <td>{{ $post->updated_at->format('Y/m/d') }}</td>
+                    <td>
+                        <a class="btn btn-small btn-success" href="{{ ('posts/'.$post->id) }}">Show</a>
+                        <a class="btn btn-small btn-info" href="{{ ('posts/'.$post->id. '/edit') }}">Edit</a>
+                        <a onclick="return confirm('Are you sure?')" class="btn btn-small btn-danger" href="{{ route('posts.destroy', $post->id) }}">Delete</a>
+                    </td>
                  </tr>
             @endforeach
+            <?php echo $posts->render(); ?>
             </tbody>
         </table>
     </div>
