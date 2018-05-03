@@ -55,4 +55,7 @@ Route::get('my-theme', function () {
 	return view('welcome3');
 })->name('my-theme');
 
+Route::get('chat', 'ChatsController@index');
+Route::get('messages', 'ChatsController@fetchMessages');
+Route::post('messages', 'ChatsController@sendMessage');
 

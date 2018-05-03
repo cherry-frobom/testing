@@ -2370,3 +2370,12 @@ if (typeof jQuery === 'undefined') {
   })
 
 }(jQuery);
+
+import Echo from "laravel-echo"
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: '294c6af65f83f6c00f46',
+    cluster: 'ap1',
+    encrypted: true
+});
